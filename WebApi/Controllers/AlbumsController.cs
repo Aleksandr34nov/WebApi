@@ -1,5 +1,4 @@
-﻿using BuissnesLayer;
-using DataLayer;
+﻿using DataLayer;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using BusinessLayer.Implementations;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,17 +18,26 @@ namespace WebApi.Controllers
     public class AlbumsController : ControllerBase
     {
         private ASContext _context;
-        private DataManager _datamanager;
+        //private DataManager _datamanager;
+        private AlbumGetAllService _albumGetAllService;
+        private AlbumGetByIdService _albumGetByIdService;
+        private AlbumAddService _albumAddService;
+        private AlbumDeleteService _albumDeleteService;
+        private AlbumUpdateService _albumUpdateService;
 
-        public AlbumsController(DataManager dataManager)
+        public AlbumsController(AlbumGetAllService albumGetAllService, AlbumGetByIdService albumGetByIdService, AlbumAddService albumAddService, AlbumDeleteService albumDeleteService, AlbumUpdateService albumUpdateService)
         {
-            _datamanager = dataManager;
+            _albumGetAllService = albumGetAllService;
+            _albumGetByIdService = albumGetByIdService;
+            _albumAddService = albumAddService;
+            _albumDeleteService = albumDeleteService;
+            _albumUpdateService = albumUpdateService;
         }
         // GET: api/<ValuesController>
         [HttpGet]
         public IEnumerable<Album> Get()
         {
-            List<Album> _albms = _datamanager.Albums.GetAllItems().ToList();
+            List<Album> _albms = _albumGetAllService.GetAllItems().ToList();
             return _albms;
         }
 
@@ -36,7 +45,7 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public Album Get(int id)
         {
-            Album albm = _datamanager.Albums.GetItemById(id);
+            Album albm = _albumGetByIdService.GetItemById(id);
             return albm;
         }
 
@@ -44,11 +53,11 @@ namespace WebApi.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] Album album)
         {
-            if (_datamanager.Albums.GetItemById(album.AlbumId) != null)
+            if (_albumGetByIdService.GetItemById(album.AlbumId) != null)
             {
                 return this.StatusCode((int)HttpStatusCode.Conflict);
             }
-            _datamanager.Albums.AddItem(album);
+            _albumAddService.AddItem(album);
             return this.Ok();
         }
 
@@ -56,11 +65,11 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] Album album)
         {
-            if (_datamanager.Albums.GetItemById(id) == null)
+            if (_albumGetByIdService.GetItemById(id) == null)
             {
                 return this.StatusCode((int)HttpStatusCode.NotFound);
             }
-            _datamanager.Albums.UpdateItem(id, album);
+            _albumUpdateService.UpdateItem(id, album);
             return this.Ok();
         }
 
@@ -68,7 +77,7 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            _datamanager.Albums.DeleteItem(id);
+            _albumDeleteService.DeleteItem(id);
         }
     }
 }

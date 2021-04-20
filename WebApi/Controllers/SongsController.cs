@@ -1,4 +1,4 @@
-﻿using BuissnesLayer;
+﻿using BusinessLayer.Implementations;
 using DataLayer;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -17,18 +17,26 @@ namespace WebApi.Controllers
     public class SongsController : ControllerBase
     {
         private ASContext _context;
-        private DataManager _datamanager;
+        private SongGetAllService _songGetAllService;
+        private SongGetByIdService _songGetByIdService;
+        private SongAddService _songAddService;
+        private SongDeleteService _songDeleteService;
+        private SongUpdateService _songUpdateService;
 
-        public SongsController(DataManager dataManager)
+        public SongsController(SongGetAllService songGetAllService, SongGetByIdService songGetByIdService, SongAddService songAddService, SongDeleteService songDeleteService, SongUpdateService songUpdateService)
         {
-            _datamanager = dataManager;
+            _songGetAllService = songGetAllService;
+            _songGetByIdService = songGetByIdService;
+            _songAddService = songAddService;
+            _songDeleteService = songDeleteService;
+            _songUpdateService = songUpdateService;
         }
 
         // GET: api/<SongsController>
         [HttpGet]
         public IEnumerable<Song> Get()
         {
-            List<Song> _sngs = _datamanager.Songs.GetAllItems().ToList();
+            List<Song> _sngs = _songGetAllService.GetAllItems().ToList();
             return _sngs;
         }
 
@@ -36,7 +44,7 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public Song Get(int id)
         {
-            Song _sngs = _datamanager.Songs.GetItemById(id);
+            Song _sngs = _songGetByIdService.GetItemById(id);
             return _sngs;
         }
         
@@ -44,12 +52,12 @@ namespace WebApi.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] Song song)
         {
-            if (_datamanager.Songs.GetItemById(song.SongId) != null)
+            if (_songGetByIdService.GetItemById(song.SongId) != null)
             {
                 return this.StatusCode((int)HttpStatusCode.Conflict);
             }
 
-            _datamanager.Songs.AddItem(song);
+            _songAddService.AddItem(song);
             return this.Ok();
         }
 
@@ -57,11 +65,11 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] Song song)
         {
-            if (_datamanager.Songs.GetItemById(id) == null)
+            if (_songGetByIdService.GetItemById(id) == null)
             {
                 return this.StatusCode((int)HttpStatusCode.NotFound);
             }
-            _datamanager.Songs.UpdateItem(id, song);
+            _songUpdateService.UpdateItem(id, song);
             return this.Ok();
         }
 
@@ -69,7 +77,7 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            _datamanager.Songs.DeleteItem(id);
+            _songDeleteService.DeleteItem(id);
         }
     }
 }

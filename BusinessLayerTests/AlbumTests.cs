@@ -1,10 +1,9 @@
 ﻿using NUnit.Framework;
-using BuissnesLayer.Implementations;
 using DataLayer.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using BuissnesLayer.Interfaces;
+using BusinessLayer.Implementations;
 using DataLayer;
 using DataLayer.Interfaces;
 using Domain;
@@ -24,8 +23,8 @@ namespace BuissnessLayerTests
             _Album.AlbumId = 0;
             var aRepo = new Mock<IARepo>();
             aRepo.Setup(x => x.GetById(1)).Returns(_Album);
-            var employeeGetService = new EFAlbumsRepository(aRepo.Object);
-            Assert.AreEqual(employeeGetService.GetItemById(1), _Album);
+            var albumGetByIdService = new AlbumGetByIdService(aRepo.Object);
+            Assert.AreEqual(albumGetByIdService.GetItemById(1), _Album);
         }
 
         [Test]
@@ -36,8 +35,8 @@ namespace BuissnessLayerTests
             _Album.Title = "Covers";
             var aRepo = new Mock<IARepo>();
             aRepo.Setup(x => x.Add(_Album)).Returns(_Album.AlbumId);
-            var employeeGetService = new EFAlbumsRepository(aRepo.Object);
-            Assert.AreEqual(employeeGetService.AddItem(_Album), _Album.AlbumId);
+            var albumAddService = new AlbumAddService(aRepo.Object);
+            Assert.AreEqual(albumAddService.AddItem(_Album), _Album.AlbumId);
         }
 
         [Test]
@@ -48,8 +47,8 @@ namespace BuissnessLayerTests
             _Album.Title = "Covers";
             var aRepo = new Mock<IARepo>();
             aRepo.Setup(x => x.Delete(_Album.AlbumId)).Returns(_Album.AlbumId);
-            var employeeGetService = new EFAlbumsRepository(aRepo.Object);
-            Assert.AreEqual(employeeGetService.DeleteItem(_Album.AlbumId), _Album.AlbumId);
+            var albumDeleteService = new AlbumDeleteService(aRepo.Object);
+            Assert.AreEqual(albumDeleteService.DeleteItem(_Album.AlbumId), _Album.AlbumId);
         }
 
         [Test]
@@ -64,8 +63,8 @@ namespace BuissnessLayerTests
             _AlbumList.Add(_Album3);
             var sRepo = new Mock<IARepo>();
             sRepo.Setup(x => x.GetAll()).Returns(_AlbumList);
-            var employeeGetService = new EFAlbumsRepository(sRepo.Object);
-            Assert.AreEqual(employeeGetService.GetAllItems(), _AlbumList);
+            var albumGetAllService = new AlbumGetAllService(sRepo.Object);
+            Assert.AreEqual(albumGetAllService.GetAllItems(), _AlbumList);
         }
 
         [Test]
@@ -76,8 +75,8 @@ namespace BuissnessLayerTests
             _Album.Title = "Meteora";
             var aRepo = new Mock<IARepo>();
             aRepo.Setup(x => x.Update(0, _Album)).Returns(_Album);
-            var employeeGetService = new EFAlbumsRepository(aRepo.Object);
-            Assert.AreEqual(employeeGetService.UpdateItem(0, _Album), _Album);
+            var albumUpdateService = new AlbumUpdateService(aRepo.Object);
+            Assert.AreEqual(albumUpdateService.UpdateItem(0, _Album), _Album);
         }
     }
 }

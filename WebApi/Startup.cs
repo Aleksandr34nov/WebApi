@@ -1,6 +1,3 @@
-using BuissnesLayer;
-using BuissnesLayer.Implementations;
-using BuissnesLayer.Interfaces;
 using DataLayer;
 using DataLayer.Implementations;
 using DataLayer.Interfaces;
@@ -17,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLayer.Implementations;
+using BusinessLayer.Interfaces;
 
 namespace WebApi
 {
@@ -36,10 +35,27 @@ namespace WebApi
             services.AddDbContext<ASContext>(options => options.UseSqlServer(connection, b => b.MigrationsAssembly("DataLayer")));
             services.AddTransient<ISRepo, SongDataAccess>();
             services.AddTransient<IARepo, AlbumDataAccess>();
-            services.AddTransient<ISongRepository, EFSongsRepository>();
-            services.AddTransient<IAlbumRepository, EFAlbumsRepository>();
+            services.AddTransient<ISongGetAllService, SongGetAllService>();
+            services.AddTransient<ISongGetByIdService, SongGetByIdService>();
+            services.AddTransient<ISongAddService, SongAddService>();
+            services.AddTransient<ISongDeleteService, SongDeleteService>();
+            services.AddTransient<ISongUpdateService, SongUpdateService>();
+            services.AddTransient<IAlbumGetAllService, AlbumGetAllService>();
+            services.AddTransient<IAlbumGetByIdService, AlbumGetByIdService>();
+            services.AddTransient<IAlbumAddService, AlbumAddService>();
+            services.AddTransient<IAlbumDeleteService, AlbumDeleteService>();
+            services.AddTransient<IAlbumUpdateService, AlbumUpdateService>();
 
-            services.AddScoped<DataManager>();
+            services.AddScoped<AlbumGetAllService>();
+            services.AddScoped<AlbumGetByIdService>();
+            services.AddScoped<AlbumAddService>();
+            services.AddScoped<AlbumDeleteService>();
+            services.AddScoped<AlbumUpdateService>();
+            services.AddScoped<SongGetAllService>();
+            services.AddScoped<SongGetByIdService>();
+            services.AddScoped<SongAddService>();
+            services.AddScoped<SongDeleteService>();
+            services.AddScoped<SongUpdateService>();
             services.AddControllers();
         }
 
